@@ -1,5 +1,6 @@
 package fr.istic.tpgae.client;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.core.client.EntryPoint;
@@ -15,6 +16,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.view.client.ListDataProvider;
 
+import fr.istic.tpgae.shared.Maison;
 import fr.istic.tpgae.shared.Personne;
 
 /**
@@ -98,6 +100,13 @@ public class Tpgae implements EntryPoint {
 			p.setNom(txt_nom.getText());
 			p.setMail(txt_email.getText());
 			p.setPrenom(txt_prenom.getText());
+			List<Maison> listes = new ArrayList<Maison>();
+			Maison m1 = new Maison();
+			m1.setAdresse("15 rue de versailles");
+			m1.setCp("75000");
+			m1.setVille("Paris");
+			listes.add(m1);
+			p.setMaison(listes);
 			greetingService.inscrirePersonne(p,callback);
 		}
 		

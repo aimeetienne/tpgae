@@ -1,11 +1,17 @@
 package fr.istic.tpgae.shared;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
+
+import org.datanucleus.api.jpa.annotations.Extension;
 
 
 @Entity
@@ -16,14 +22,18 @@ public class Personne implements Serializable{
 	private String prenom;
 	private String mail;
 	
+	@OneToMany(cascade=CascadeType.PERSIST)
+	private List<Maison> maisons = new ArrayList<Maison>();
+	
 	@Id@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private Long id;
+	@Extension(vendorName = "datanucleus", key = "gae.encoded-pk", value="true") 
+	private String id;
 
 	
-	public Long getId() {
+	public String getId() {
 		return id;
 	}
-	public void setId(Long id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 	public String getNom() {
@@ -50,6 +60,12 @@ public class Personne implements Serializable{
 	@Override
 	public String toString() {
 		return prenom+" "+nom+" "+mail;
+	}
+	public List<Maison> getMaison() {
+		return maisons;
+	}
+	public void setMaison(List<Maison> maisons) {	
+		this.maisons.addAll(maisons);
 	}
 
 }

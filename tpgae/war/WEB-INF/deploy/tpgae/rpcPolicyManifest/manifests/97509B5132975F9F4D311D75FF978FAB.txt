@@ -1,0 +1,2 @@
+serviceClass: fr.istic.tpgae.client.GreetingService
+path: C62A75CCA96957F6BDA6F21F8EC24D28.gwt.rpc
