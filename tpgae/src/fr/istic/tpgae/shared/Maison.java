@@ -1,7 +1,6 @@
 package fr.istic.tpgae.shared;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -26,10 +25,10 @@ public class Maison implements Serializable{
 	private String cp;
 	
 	@OneToMany
-	private List<Personne> personnes = new ArrayList<Personne>();
+	private List<Personne> personnes;
 
 	public void setPersonnes(List<Personne> personnes) {
-		this.personnes.addAll(personnes);
+		this.personnes=personnes;
 	}
 	public List<Personne> getPersonnes() {
 		return personnes;
