@@ -1,0 +1,3 @@
+# Module tpgae
+# RPC service class, partial path of RPC policy file
+fr.istic.tpgae.client.GreetingService, 544B58748ADE529A3B8FD74E5534AF42.gwt.rpc

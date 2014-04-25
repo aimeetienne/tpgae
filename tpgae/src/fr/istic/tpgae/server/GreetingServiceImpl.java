@@ -1,7 +1,16 @@
 package fr.istic.tpgae.server;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import javax.persistence.TypedQuery;
+
 import fr.istic.tpgae.client.GreetingService;
-import fr.istic.tpgae.shared.FieldVerifier;
+import fr.istic.tpgae.shared.Personne;
+
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 /**
@@ -10,39 +19,49 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 @SuppressWarnings("serial")
 public class GreetingServiceImpl extends RemoteServiceServlet implements
 		GreetingService {
+	
+	private final EntityManager manager;
+	
 
-	public String greetServer(String input) throws IllegalArgumentException {
-		// Verify that the input is valid. 
-		if (!FieldVerifier.isValidName(input)) {
-			// If the input is not valid, throw an IllegalArgumentException back to
-			// the client.
-			throw new IllegalArgumentException(
-					"Name must be at least 4 characters long");
-		}
-
-		String serverInfo = getServletContext().getServerInfo();
-		String userAgent = getThreadLocalRequest().getHeader("User-Agent");
-
-		// Escape data from the client to avoid cross-site script vulnerabilities.
-		input = escapeHtml(input);
-		userAgent = escapeHtml(userAgent);
-
-		return "Hello, " + input + "!<br><br>I am running " + serverInfo
-				+ ".<br><br>It looks like you are using:<br>" + userAgent;
+	public GreetingServiceImpl(){
+		EntityManagerFactory factory = Persistence
+				.createEntityManagerFactory("transactions-optional");
+		manager = factory.createEntityManager();
+	}
+	
+	@Override
+	public void inscrirePersonne(Personne p) throws IllegalArgumentException {
+		manager.getTransaction().begin();
+		manager.persist(p);
+		manager.getTransaction().commit();
 	}
 
-	/**
-	 * Escape an html string. Escaping data received from the client helps to
-	 * prevent cross-site script vulnerabilities.
-	 * 
-	 * @param html the html string to escape
-	 * @return the escaped string
-	 */
-	private String escapeHtml(String html) {
-		if (html == null) {
-			return null;
+	@Override
+	public List<Personne> lirePersonnes() throws IllegalArgumentException {
+		
+		TypedQuery<Personne> q = manager.createQuery("SELECT p FROM Personne p",Personne.class);
+		List<Personne> resul = new ArrayList<Personne>();
+		try{
+			List<Personne> temp = q.getResultList();
+			for (Personne p : temp)
+				resul.add(p);
+			
 		}
-		return html.replaceAll("&", "&amp;").replaceAll("<", "&lt;")
-				.replaceAll(">", "&gt;");
+		catch (Exception e){
+			System.out.println(e);
+		}
+		
+		return resul;
+
 	}
+
+	@Override
+	public void deletePersonnes() throws IllegalArgumentException {
+		manager.createQuery("DELETE FROM Personne p").executeUpdate();
+		
+	}
+	
+
+	
+	
 }
